@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
+import json
 import socket
+
+from pynput.keyboard import Key, Listener, Controller, KeyCode
+
+keyboard = Controller()
 
 HOST = '0.0.0.0'
 PORT = 1337
@@ -16,4 +21,10 @@ while True:
     if not data:
         break
     print(repr(data))
-    conn.sendall(data)
+
+    event = json.loads(data)
+
+    if event['type'] == 'press':
+        keyboard.press(KeyCode(vk=event['key']))
+    elif event['type'] == 'release':
+        keyboard.release(KeyCode(vk=event['key']))
